@@ -3,8 +3,8 @@ This gem allows hide and restore nodes of [ancestry gem](https://github.com/stef
 
 ### Usage
 State before hiding
-```ruby
-User.first.subtree
+```
+$ User.first.subtree
 $ #<ActiveRecord::Relation [
     <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil>,
       <id: 2, name: 'Parent', hided_status: false, ancestry: '1'>,
@@ -12,11 +12,13 @@ $ #<ActiveRecord::Relation [
 ```
 
 Hiding second user
-```ruby
-User.second.hide
+```
+$ User.second.hide
+```
 
-# Ancestry subtree became changed
-User.first.subtree
+Ancestry subtree became changed
+```
+$ User.first.subtree
 $ #<ActiveRecord::Relation [
     <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil>,
       <id: 3, name: 'Child', hided_status: false, ancestry: '1'> ]>
@@ -27,10 +29,10 @@ $ <ActiveRecord::Relation [
 ```
 
 Restoring hided user
-```ruby
-User.find(2).restore # restore hided user to previous subtree
+```
+$ User.find(2).restore # restore hided user to previous subtree
 
-User.first.subtree
+$ User.first.subtree
 $ #<ActiveRecord::Relation [
     <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil>,
       <id: 2, name: 'Parent', hided_status: false, ancestry: '1'>,
@@ -52,7 +54,7 @@ bundle install
 
 To install hide_ancestry migration:
 ```ruby
-rails generate hide_acestry:migration[users] # or any column with ancestry
+rails generate hide_acestry:migration users # or another table with ancestry
 rake db:migrate
 ```
 It will add to the specified table:
@@ -102,11 +104,14 @@ hided_childs(id) # return hided nodes which was children of node#id
 
 ###Options for has_hide_ancestry
 ```ruby
-use_column: :you_custom_bool_column # you can remove hide_status col if you use this option
-readable_depth: true # unlock readable_depth method;
-                     # when depth == 3, readable_depth will return '1.2.3'
+# You can remove hide_status col if you use this option
+use_column: :you_custom_bool_column 
+
+# Unlock readable_depth method;
+# when depth == 3, readable_depth == '1.2.3'
+readable_depth: true
 ```
 
 ###Some notes
-+ You can change ancestry subtree as you want after node became hided. Hided node still can be restored to previous parent and will update it old descendants (if descendant does not changed it parent)
-+ Hided nodes have no actual ancestry - no any parents or descendants
++ You can change ancestry subtree as you want after node became hided. Hided node still can be restored to previous parent and will update it old descendants (if descendant did not change it parent)
++ Hided nodes have no actual ancestry - no any ancestry parents or descendants

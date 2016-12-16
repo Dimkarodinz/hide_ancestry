@@ -1,3 +1,4 @@
+require 'ancestry'
 Dir["hide_ancestry/**/*.rb"].each { |file| require file }
 
 module HideAncestry

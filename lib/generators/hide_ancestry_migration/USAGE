@@ -1,0 +1,8 @@
+Description:
+    Add hide_ancestry columns to table
+
+Example:
+    rails generate hide_ancestry:migration things
+
+    Will create:
+        db/migrate/add_hide_ancestry_cols_to_things.rb
