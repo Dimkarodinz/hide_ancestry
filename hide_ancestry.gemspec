@@ -9,12 +9,13 @@ Gem::Specification.new do |s|
   s.version     = HideAncestry::VERSION
   s.authors     = ["Dimkarodinz"]
   s.email       = ["dimkarodin@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/Dimkarodinz/hide_ancestry"
   s.summary     = "Hide and restore ancestry nodes"
   s.description = "Hide and restore nodes with ancestry gem"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.test_files = Dir["spec/**/*"]
 
   s.add_dependency "rails", "~> 4.2.5"
   s.add_dependency "ancestry", ">= 2.2.2"
