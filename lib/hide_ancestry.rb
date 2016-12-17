@@ -1,28 +1,33 @@
 require 'ancestry'
-Dir["hide_ancestry/**/*.rb"].each { |file| require file }
+
+require 'hide_ancestry/engine'
+require 'hide_ancestry/errors'
+require 'hide_ancestry/instance_methods'
+
+require 'hide_ancestry/model_manage/base'
+require 'hide_ancestry/model_manage/custom_ancestry_updater'
+require 'hide_ancestry/model_manage/fire'
+require 'hide_ancestry/model_manage/restore'
 
 module HideAncestry
   extend ActiveSupport::Concern
 
   class_methods do
     def has_hide_ancestry options = {}
-      # TODO:
-      # => check if cols present
-      # => exeptions
+      # TODO: delete depth_level col
 
       # Include private validation errors to the model
-      include HideAncestry::Errors
+      include Errors
 
       # Include instance methods to the model
-      include HideAncestry::InstanceMethods
+      include InstanceMethods
 
-      # Add ActiveRecord callbacks, scopes and validations
-      # excule HideAncestry::ClassMethods
+      serialize :old_child_ids, Array
 
       scope :hided,   -> { where hided_status: true }
       scope :unhided, -> { where.not(hided_status: true) }
-      scope :hided_users,  -> (ids) { fired.where id: ids }
-      scope :hided_childs, -> (some_id) { fired.where old_parent_id: some_id }
+      scope :hided_users,  -> (ids) { hided.where id: ids }
+      scope :hided_childs, -> (some_id) { hided.where old_parent_id: some_id }
 
       # Persist record changes for correct work of #previous_changes
       before_save do |record|
@@ -30,7 +35,7 @@ module HideAncestry
       end
 
       after_save do |record|
-        HideAncestry::ModelManage::CustomAncestryUpdater.call(self)
+        ModelManage::CustomAncestryUpdater.call(self)
       end
 
       # For node#hided? when it trying to change #parent_id
@@ -38,6 +43,3 @@ module HideAncestry
     end
   end
 end
-
-# Include the extension 
-ActiveRecord::Base.send(:include, HideAncestry)

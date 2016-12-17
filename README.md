@@ -1,119 +1,149 @@
 # HideAncestry
-This gem allows hide and restore nodes of [ancestry gem](https://github.com/stefankroes/ancestry)
+This gem allows hide and restore nodes of [ancestry](https://github.com/stefankroes/ancestry)
 
 ### Usage
-State before hiding
+State before hiding:
 ```
 $ User.first.subtree
 $ #<ActiveRecord::Relation [
-    <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil>,
-      <id: 2, name: 'Parent', hided_status: false, ancestry: '1'>,
-        <id: 3, name: 'Child', hided_status: false, ancestry: '1/2'> ]>
+    <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil, hide_ancestry: 1>,
+      <id: 2, name: 'Parent', hided_status: false, ancestry: '1', hide_ancestry: '1/2'>,
+        <id: 3, name: 'Child', hided_status: false, ancestry: '1/2', hide_ancestry '1/2/3'> ]>
 ```
 
-Hiding second user
+####Hiding
 ```
 $ User.second.hide
 ```
 
-Ancestry subtree became changed
+Ancestry subtree became changed:
 ```
 $ User.first.subtree
 $ #<ActiveRecord::Relation [
-    <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil>,
-      <id: 3, name: 'Child', hided_status: false, ancestry: '1'> ]>
+    <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil, hide_ancestry: '1'>,
+      <id: 3, name: 'Child', hided_status: false, ancestry: '1', hide_ancestry: '1/2/3'> ]>
 
-User.hided
+$ User.hided
 $ <ActiveRecord::Relation [
-    <id: 2, name: 'Parent', hided_status: true, ancestry: nil> ]>
+    <id: 2, name: 'Parent', hided_status: true, ancestry: nil, hide_ancestry: '1/2'> ]>
 ```
 
-Restoring hided user
+Restoring hided node:
 ```
-$ User.find(2).restore # restore hided user to previous subtree
+$ User.find(2).restore # restore hided node to previous subtree
 
 $ User.first.subtree
-$ #<ActiveRecord::Relation [
-    <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil>,
-      <id: 2, name: 'Parent', hided_status: false, ancestry: '1'>,
-        <id: 3, name: 'Child', hided_status: false, ancestry: '1/2'> ]>
+    <id: 1, name: 'Grandpa', hided_status: false, ancestry: nil, hide_ancestry: '1'>,
+      <id: 2, name: 'Parent', hided_status: false, ancestry: '1', hide_ancestry: '1/2'>,
+        <id: 3, name: 'Child', hided_status: false, ancestry: '1/2', hide_ancestry: '1/2/3'>
 
 User.hided
 $ #<ActiveRecord::Relation []>
 ```
+
+####Hiding, updating subtree and restoring hided node
+```ruby
+$ User.find(2).hide
+$ User.find_by(name: 'Grandpa').update parent_id: 4
+
+# hide_ancestry of subtree became updated
+$ User.find(4).subtree
+    <id: 4, name: 'Root User', hided_status: false, ancestry: nil, hide_ancestry: '4'>,
+       <id: 1, name: 'Grandpa', hided_status: false, ancestry: '1', hide_ancestry: '4/1'>,
+          <id: 3, name: 'Child', hided_status: false, ancestry: '1/2', hide_ancestry: '4/1/2/3'>
+
+# Hided node update it hide_ancestry too
+$ User.hided
+$ #<ActiveRecord::Relation [
+   < id: 2, name: 'Parent', hided_status: true, ancestry: nil, hide_ancestry: '4/1/2' > ]>
+
+# You can look on subtree with hided node
+$ User.find(4).subtree_with_hided
+    <id: 4, name: 'Root User', hided_status: false, ancestry: nil, hide_ancestry: '4'>,
+       <id: 1, name: 'Grandpa', hided_status: false, ancestry: '1', hide_ancestry: '4/1'>,
+          <id: 2, name: 'Parent', hided_status: true, ancestry: nil, hide_ancestry: '4/1/2'>,
+             <id: 3, name: 'Child', hided_status: false, ancestry: '1/2', hide_ancestry: '4/1/2/3'>
+
+# Restoring still works correctly
+$ User.find(2).restore
+$ User.find(4).subtree
+    <id: 4, name: 'Root User', hided_status: false, ancestry: nil, hide_ancestry: '4'>,
+       <id: 1, name: 'Grandpa', hided_status: false, ancestry: '1', hide_ancestry: '4/1'>,
+          <id: 2, name: 'Parent', hided_status: false, ancestry: '1/2', hide_ancestry: '4/1/2'>,
+            <id: 3, name: 'Child', hided_status: false, ancestry: '1/2/3', hide_ancestry: '4/1/2/3'>
+
+
+
+
 ### Installation
 Add to your Gemfile
 ``` ruby
 gem 'ancestry'
 gem 'hide_ancestry'
 ```
-And install
+And run
 ```
 bundle install
 ```
-
 To install hide_ancestry migration:
 ```ruby
- # Set any table with ancestry
- # Type --no-hided-status if you will use your own boolean column to hide nodes
+# Set any table with ancestry.
+# Type --no-hided-status if you are going to use your own boolean column for hiding nodes
 rails generate hide_ancestry_migration users [--no-hided-status]
 rake db:migrate
 ```
 It will add to the specified table:
 + old_parent_id:integer
-+ old_child_ids:array  (using rails serialize)
++ old_child_ids:array  (thanks to rails serialize)
 + hide_ancestry:string
-+ hided_status:boolean
++ hided_status:boolean (unless --no-hided-status option)
 
-Add to your model
+Then add to your model:
 ```ruby
 class User < ActiveRecord::Base
   has_ancestry
   has_hide_ancestry
 end
 ```
+Now you are able to use hide_ancestry methods.
 
 ###Instance methods
 ```ruby
-hide                      # hide node:
-                          #   node#ancestry became nil;
-                          #   node#hided_status became true
-restore                   # restore node:
-                          #   restore node#ancestry
-                          #   node#hided_status became false
-                          #   update node old descendants
+hide                      # hide node
+restore                   # restore hided node
 
 hided?                    # check if node is hided
-hided_parent_changed?     # check if node changed it parent
-hided_children_present?   # check if node has hided children
+hided_parent_changed?     # check if regular node changed it hided parent
+hided_children_present?   # check if regular node has hided children
+
+hided_parent              # return hided parent of regular node (if present)
+subtree_with_hided        # return subtree of regular node with hided nodes
 
 children_of_hided         # return children of hided node
-hided_parent              # return hided parent of node if present
-subtree_with_hided        # return subtree with hided nodes
-hided_descendants_ids     # return ids of hided users in subtree 
+hided_descendants_ids     # return ids of hided nodes in subtree of regular node 
 hided_path_ids            # old ancestors ids of hided node
 
 ```
 
 ###Scopes
 ```ruby
-hided            # return nodes with hided_status
+hided            # return nodes with hided_status (or you custom column)
 unhided          # return nodes without hided_status
-hided_nodes(ids) # return hided nodes with ids
-hided_childs(id) # return hided nodes which was children of node#id
+hided_nodes(ids) # look for hided nodes from ids
+hided_childs(id) # return hided children nodes of id
 
 ```
 
 ###Options for has_hide_ancestry
 ```ruby
-# You can remove hide_status col if you use this option
-use_column: :you_custom_bool_column 
+# You can delete hided_status if you use this
+use_column: :you_custom_boolean_column
 
-# Unlock readable_depth method;
-# when depth == 3, readable_depth == '1.2.3'
+# Unlock readable_depth method
+# Example: depth == 3, readable_depth == '1.2.3'
 readable_depth: true
 ```
 
 ###Some notes
-+ You can change ancestry subtree as you want after node became hided. Hided node still can be restored to previous parent and will update it old descendants (if descendant did not change it parent)
-+ Hided nodes have no actual ancestry - no any ancestry parents or descendants
++ You can change ancestry subtree as you want after node`s hiding. Hided node still can be restored to previous parent and still will join it old descendants (unless descendant changed it parent).
++ Hided nodes have nil ancestry columns - no any actual parents or descendants present.

@@ -1,12 +1,5 @@
 module HideAncestry
   module InstanceMethods
-    # Monkeypatching ActiveModel::Dirty method
-    # to correct work of #previous_changes in model
-    def changes_applied
-      @previously_changed = @record_changes
-      @changed_attributes = ActiveSupport::HashWithIndifferentAccess.new
-    end
-
     def hide
       return not_valid_error unless valid?
       HideAncestry::ModelManage::Hide.call(self)
@@ -85,6 +78,13 @@ module HideAncestry
       parent_usr = self.class.find_by id: old_parent_id
       return parent unless parent_usr
       parent_usr.hided? ? parent_usr.find_first_real_parent : parent_usr
+    end
+
+    # Monkeypatching ActiveModel::Dirty method
+    # to correct work of #previous_changes in model
+    def changes_applied
+      @previously_changed = @record_changes
+      @changed_attributes = ActiveSupport::HashWithIndifferentAccess.new
     end
 
     protected

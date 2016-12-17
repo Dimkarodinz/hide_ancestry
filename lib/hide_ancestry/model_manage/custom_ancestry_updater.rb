@@ -2,14 +2,14 @@ module HideAncestry
   module ModelManage
     class CustomAncestryUpdater < Base
       def call
-        # if descendant of hided node will change its parent
+        # If descendant of hided node will change its parent
         clean_instance_from_hided_parent if instance.hided_parent_changed?
         change_hide_ancestry_cols(instance) unless instance.hided?
 
-        # first, general iteration; useful when node updated
+        # First, general iteration; useful when node updated
         instance.children.each { |child| update_each_child(child, instance) }
 
-        # fix nodes with #hided? and its descendant nodes
+        # Fix nodes with #hided? and its descendant nodes
         instance.hided_children.each do |hided_children|
           update_hided_with_descendants(hided_children, instance)
         end
@@ -23,7 +23,7 @@ module HideAncestry
         set_hide_ancestry(instance, custom_parent)
       end
 
-      # remove node_1#id from node_2#old_child_ids;
+      # Remove node_1#id from node_2#old_child_ids;
       # node_2 should be hided
       def clean_instance_from_hided_parent
         return if instance.hided?
@@ -41,7 +41,7 @@ module HideAncestry
         instance.children.each { |child| update_each_child(child, instance) }
       end
 
-      # udpate alternate ancestry cols of node#hided? and its descendant
+      # Udpate alternate ancestry cols of node#hided? and its descendant
       def update_hided_with_descendants(instance, parent)
         change_hide_ancestry_cols(instance, parent)
 
@@ -92,7 +92,7 @@ module HideAncestry
         end
       end
 
-      # for making strings like '1.2.3'
+      # For making strings like '1.2.3'
       def readable_depth_level instance, custom_parent = nil
         iterations =
           custom_parent ? depth_level_depth(custom_parent) + 1 : instance.depth

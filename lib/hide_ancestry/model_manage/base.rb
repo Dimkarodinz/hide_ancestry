@@ -14,7 +14,7 @@ module HideAncestry
       private
 
       def find_actual_parent(instance)
-        instance.fired_parent ? instance.fired_parent : instance.parent
+        instance.hided_parent ? instance.hided_parent : instance.parent
       end
 
       # TODO: if options[:custom_column]...
