@@ -11,14 +11,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161217012929) do
+ActiveRecord::Schema.define(version: 20161217182719) do
+
+  create_table "bonobos", force: :cascade do |t|
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "ancestry"
+    t.boolean  "hide_bonobo",   default: false
+    t.integer  "old_parent_id"
+    t.text     "old_child_ids"
+    t.string   "hide_ancestry"
+    t.string   "depth_level"
+  end
+
+  add_index "bonobos", ["ancestry"], name: "index_bonobos_on_ancestry"
+
+  create_table "chimpanzees", force: :cascade do |t|
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "old_parent_id"
+    t.text     "old_child_ids"
+    t.string   "hide_ancestry"
+    t.boolean  "hided_status",  default: false
+    t.string   "depth_level"
+  end
 
   create_table "monkeys", force: :cascade do |t|
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
+    t.string   "ancestry"
     t.integer  "old_parent_id"
+    t.text     "old_child_ids"
     t.string   "hide_ancestry"
     t.boolean  "hided_status",  default: false
+    t.string   "depth_level"
   end
+
+  add_index "monkeys", ["ancestry"], name: "index_monkeys_on_ancestry"
 
 end
