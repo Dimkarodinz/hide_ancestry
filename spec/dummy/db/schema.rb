@@ -11,11 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161216194357) do
+ActiveRecord::Schema.define(version: 20161217012211) do
 
   create_table "monkeys", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "old_parent_id"
+    t.string   "hide_ancestry"
+    t.boolean  "hided_status",  default: false
   end
 
 end

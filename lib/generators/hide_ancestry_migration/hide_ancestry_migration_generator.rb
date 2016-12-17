@@ -1,31 +1,38 @@
 class HideAncestryMigrationGenerator < Rails::Generators::Base
-  source_root File.expand_path('../templates', __FILE__)
+  include Rails::Generators::Migration
 
-  argument :table_name, type: :string
+  source_root  File.expand_path('../templates', __FILE__)
+  argument     :table_name, type: :string
+
   class_option :hided_status,
                 type: :boolean,
                 default: true,
                 desc: 'Create hided_status:boolean column'
 
-  def create_migration_file
-    generate "migration add_hide_ancestry_cols_to_#{table} #{arguments}"
+  def create_migration_file_in_app
+    migration_template(
+      'hide_ancestry_migration.rb',
+      "db/migrate/add_hide_ancestry_cols_to_#{table}.rb"
+      )
   end
 
   private
+
+  # Fixing 'next_migration_number' error
+  def self.next_migration_number(path)
+    unless @prev_migration_nr
+      @prev_migration_nr = Time.now.utc.strftime("%Y%m%d%H%M%S").to_i
+    else
+      @prev_migration_nr += 1
+    end
+    @prev_migration_nr.to_s
+  end
 
   def table
     table_name.underscore
   end
 
-  def arguments
-    base_arguments + optional_argument.to_s
-  end
-
-  def base_arguments
-    'old_parent_id:integer hide_ancestry:string '
-  end
-
-  def optional_argument
-    'hided_status:boolean' if options.hided_status?
+  def migration_class_name
+    "AddHideAncestryColsTo#{table_name.camelize}"
   end
 end
