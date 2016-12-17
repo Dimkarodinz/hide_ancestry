@@ -18,7 +18,7 @@ class HideAncestryMigrationGenerator < Rails::Generators::Base
 
   private
 
-  # Fixing 'next_migration_number' error
+  # Fix 'next_migration_number' error
   def self.next_migration_number(path)
     unless @prev_migration_nr
       @prev_migration_nr = Time.now.utc.strftime("%Y%m%d%H%M%S").to_i

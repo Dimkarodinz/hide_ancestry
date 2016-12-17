@@ -54,7 +54,9 @@ bundle install
 
 To install hide_ancestry migration:
 ```ruby
-rails generate hide_acestry:migration users # or another table with ancestry
+ # Set any table with ancestry
+ # Type --no-hided-status if you will use your own boolean column to hide nodes
+rails generate hide_ancestry_migration users [--no-hided-status]
 rake db:migrate
 ```
 It will add to the specified table:
