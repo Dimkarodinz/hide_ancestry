@@ -4,7 +4,7 @@ module HideAncestry
       def call
         # If descendant of hided node will change its parent
         clean_instance_from_hided_parent if instance.hided_parent_changed?
-        change_hide_ancestry_cols(instance) unless instance.hided?
+        change_hide_ancestry_col(instance) unless instance.hided?
 
         # First, general iteration; useful when node updated
         instance.children.each { |child| update_each_child(child, instance) }
@@ -17,9 +17,8 @@ module HideAncestry
 
       private
 
-      def change_hide_ancestry_cols(instance, custom_parent = nil)
+      def change_hide_ancestry_col(instance, custom_parent = nil)
         custom_parent = instance.hided_parent unless custom_parent
-        set_depth_level(instance, custom_parent)
         set_hide_ancestry(instance, custom_parent)
       end
 
@@ -35,7 +34,7 @@ module HideAncestry
       end
 
       def update_each_child(instance, parent)
-        change_hide_ancestry_cols(instance, parent)
+        change_hide_ancestry_col(instance, parent)
         update_hided_children_cols(instance) if instance.hided_children_present?
 
         instance.children.each { |child| update_each_child(child, instance) }
@@ -43,7 +42,7 @@ module HideAncestry
 
       # Udpate alternate ancestry cols of node#hided? and its descendant
       def update_hided_with_descendants(instance, parent)
-        change_hide_ancestry_cols(instance, parent)
+        change_hide_ancestry_col(instance, parent)
 
         if instance.hided?
           instance.children_of_hided.each do |child|
@@ -59,17 +58,8 @@ module HideAncestry
 
       def update_hided_children_cols(instance)
         instance.hided_children.each do |hided_child|
-          change_hide_ancestry_cols(hided_child, instance)
+          change_hide_ancestry_col(hided_child, instance)
         end
-      end
-
-      # TODO: if options[:depth_level]
-      def set_depth_level instance, custom_parent = nil
-        instance.update_column(
-          :depth_level,
-          readable_depth_level(instance, custom_parent)
-          )
-        instance.reload
       end
 
       def set_hide_ancestry instance, custom_parent = nil
@@ -90,26 +80,6 @@ module HideAncestry
         else
           instance.parent_id.blank? ? instance.id.to_s : instance.path_ids.join('/')
         end
-      end
-
-      # For making strings like '1.2.3'
-      def readable_depth_level instance, custom_parent = nil
-        iterations =
-          custom_parent ? depth_level_depth(custom_parent) + 1 : instance.depth
-        counter, levels  = 0, []
-
-        iterations.times do
-          counter += 1
-          levels << counter
-        end
-
-        counter.zero? ? '0' : levels.join('.')
-      end
-
-      def depth_level_depth(instance)
-        return unless instance.depth_level
-        return 0 if instance.depth_level.to_i.zero?
-        instance.depth_level.delete('.').size
       end
     end
   end

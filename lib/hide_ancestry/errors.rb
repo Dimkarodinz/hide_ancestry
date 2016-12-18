@@ -14,7 +14,7 @@ module HideAncestry
     end
 
     def not_valid_error
-      errors.add :base, "#{self.class} not valid"
+      errors.add :base, "#{self.class} is not valid"
     end
   end
 end

@@ -7,7 +7,7 @@ module HideAncestry
 
     def restore
       return not_valid_error unless valid?
-      return already_restored_error unless hided_status == true
+      return already_restored_error unless public_send($hided_column) == true
       HideAncestry::ModelManage::Restore.call(self)
     end
 
@@ -17,9 +17,9 @@ module HideAncestry
       old_parent_changes.first.nil?
     end
 
-    # if options[:custom_column]...
     def hided?
-      hided_status == true
+      self.public_send($hided_column) == true
+      # hided_status == true
     end
 
     def hide_ancestry_ids
@@ -48,7 +48,11 @@ module HideAncestry
       sub_ids = subtree.pluck(:id)
       ids_for_search = sub_ids + hided_descendants_ids
       self.class.where id: ids_for_search
-      # TODO: add sort by hide_ancestry
+      #.order(hide_ancestry: :desc)
+    end
+
+    def depth_with_hided
+      hide_ancestry_ids.size
     end
 
     def hided_parent
@@ -65,7 +69,7 @@ module HideAncestry
 
     def hided_descendants_ids
       ids = []
-      iterate_desc_for_hided(ids) # TODO: Do I need this?
+      iterate_desc_for_hided(ids)
       iterate_hided_desc(ids)
       ids.uniq
     end

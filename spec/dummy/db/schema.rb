@@ -21,20 +21,9 @@ ActiveRecord::Schema.define(version: 20161218161330) do
     t.integer  "old_parent_id"
     t.text     "old_child_ids"
     t.string   "hide_ancestry"
-    t.string   "depth_level"
   end
 
   add_index "bonobos", ["ancestry"], name: "index_bonobos_on_ancestry"
-
-  create_table "chimpanzees", force: :cascade do |t|
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-    t.integer  "old_parent_id"
-    t.text     "old_child_ids"
-    t.string   "hide_ancestry"
-    t.boolean  "hided_status",  default: false
-    t.string   "depth_level"
-  end
 
   create_table "monkeys", force: :cascade do |t|
     t.datetime "created_at",                    null: false
@@ -44,7 +33,6 @@ ActiveRecord::Schema.define(version: 20161218161330) do
     t.text     "old_child_ids"
     t.string   "hide_ancestry"
     t.boolean  "hided_status",  default: false
-    t.string   "depth_level"
     t.string   "name"
   end
 

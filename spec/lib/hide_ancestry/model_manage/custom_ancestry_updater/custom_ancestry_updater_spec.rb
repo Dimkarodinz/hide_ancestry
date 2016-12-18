@@ -42,34 +42,5 @@ describe HideAncestry::ModelManage::CustomAncestryUpdater do
         .to eq "#{grandparent.id}"
       end
     end
-
-    context '#depth_level' do
-      it 'in general case' do
-        expect(some_monkey.depth_level).to be_nil
-        some_monkey.save
-
-        expect(some_monkey.depth_level).to eq '0'
-        expect(some_monkey.depth).to eq 0
-      end
-
-      it 'if node has #depth' do
-        allow(some_monkey).to receive(:depth).and_return 4
-        some_monkey.save
-        expect(some_monkey.depth_level).to eq '1.2.3.4'
-      end
-
-      it 'if node has #fired_parent' do
-        some_monkey.parent = parent
-        some_monkey.save
-        HideAncestry::ModelManage::Hide.call(parent)
-
-        # Because #parent became grandparent;
-        # fired parent has no #ancestry
-        expect(some_monkey.reload.depth).to eq 1
-
-        # If parent presented as #parent
-        expect(some_monkey.depth_level).to eq '1.2'
-      end
-    end
   end
 end

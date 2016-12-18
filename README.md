@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Dimkarodinz/hide_ancestry.svg?branch=master)](https://travis-ci.org/Dimkarodinz/hide_ancestry)
 # HideAncestry
 This gem allows hide and restore nodes of [ancestry](https://github.com/stefankroes/ancestry)
 
@@ -139,8 +140,4 @@ hided_childs(id) # return hided children nodes of id
 ```ruby
 # You can delete hided_status if you use this
 use_column: :you_custom_boolean_column
-
-# Unlock readable_depth method.
-# Example: when depth == 3, readable_depth == '1.2.3'
-readable_depth: true
 ```

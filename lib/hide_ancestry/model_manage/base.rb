@@ -17,9 +17,8 @@ module HideAncestry
         instance.hided_parent ? instance.hided_parent : instance.parent
       end
 
-      # TODO: if options[:custom_column]...
       def change_hided_status(boolean)
-        instance.update_attribute :hided_status, boolean
+        instance.update_attribute $hided_column, boolean
       end
     end
   end
