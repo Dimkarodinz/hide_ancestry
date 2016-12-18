@@ -28,7 +28,7 @@ $ <ActiveRecord::Relation [
     <id: 2, name: 'Parent', hided_status: true, ancestry: nil, hide_ancestry: '1/2'> ]>
 ```
 
-Restoring hided node:
+####Restoring hided node:
 ```
 $ User.find(2).restore # restore hided node to previous subtree
 
@@ -42,20 +42,20 @@ $ #<ActiveRecord::Relation []>
 ```
 
 ####Hiding, updating subtree and restoring hided node
-```ruby
+```
 $ User.find(2).hide
 $ User.find_by(name: 'Grandpa').update parent_id: 4
 
-# hide_ancestry of subtree became updated
+# hide_ancestry of each node of subtree became updated
 $ User.find(4).subtree
     <id: 4, name: 'Root User', hided_status: false, ancestry: nil, hide_ancestry: '4'>,
        <id: 1, name: 'Grandpa', hided_status: false, ancestry: '1', hide_ancestry: '4/1'>,
           <id: 3, name: 'Child', hided_status: false, ancestry: '1/2', hide_ancestry: '4/1/2/3'>
 
-# Hided node update it hide_ancestry too
+# Hided node update its hide_ancestry too
 $ User.hided
-$ #<ActiveRecord::Relation [
-   < id: 2, name: 'Parent', hided_status: true, ancestry: nil, hide_ancestry: '4/1/2' > ]>
+$ <ActiveRecord::Relation [
+   <id: 2, name: 'Parent', hided_status: true, ancestry: nil, hide_ancestry: '4/1/2'> ]>
 
 # You can look on subtree with hided node
 $ User.find(4).subtree_with_hided
@@ -71,9 +71,10 @@ $ User.find(4).subtree
        <id: 1, name: 'Grandpa', hided_status: false, ancestry: '1', hide_ancestry: '4/1'>,
           <id: 2, name: 'Parent', hided_status: false, ancestry: '1/2', hide_ancestry: '4/1/2'>,
             <id: 3, name: 'Child', hided_status: false, ancestry: '1/2/3', hide_ancestry: '4/1/2/3'>
+```
 
-
-
++ You can change ancestry subtree as you want after node`s hiding. Hided node still can be restored to previous parent and still will join correctly it old descendants (unless you changed descendant`s parent).
++ Hided nodes have nil ancestry columns - no any actual parents or descendants present. 
 
 ### Installation
 Add to your Gemfile
@@ -121,7 +122,7 @@ subtree_with_hided        # return subtree of regular node with hided nodes
 
 children_of_hided         # return children of hided node
 hided_descendants_ids     # return ids of hided nodes in subtree of regular node 
-hided_path_ids            # old ancestors ids of hided node
+hide_ancestry_ids         # old ancestors ids of hided node
 
 ```
 
@@ -139,11 +140,7 @@ hided_childs(id) # return hided children nodes of id
 # You can delete hided_status if you use this
 use_column: :you_custom_boolean_column
 
-# Unlock readable_depth method
-# Example: depth == 3, readable_depth == '1.2.3'
+# Unlock readable_depth method.
+# Example: when depth == 3, readable_depth == '1.2.3'
 readable_depth: true
 ```
-
-###Some notes
-+ You can change ancestry subtree as you want after node`s hiding. Hided node still can be restored to previous parent and still will join it old descendants (unless descendant changed it parent).
-+ Hided nodes have nil ancestry columns - no any actual parents or descendants present.

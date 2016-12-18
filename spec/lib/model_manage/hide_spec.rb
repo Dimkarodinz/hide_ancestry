@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe EmployeeManage::Fire do
-  include_examples '.user factories'
-  let(:some_user) { create :user }
+describe HideAncestry::ModelManage::Hide do
+  include_examples 'Monkeys subtree'
+  let(:some_monkey) { create :monkey }
 
   context '#call' do
     subject { described_class.new(parent) }
     after   { subject.call }
 
-    it { is_expected.to receive(:change_fired_status).with(true) }
+    it { is_expected.to receive(:change_hided_status).with(true) }
     it { is_expected.to receive :save_parent_id }
     it { is_expected.to receive :save_child_ids }
 
@@ -19,8 +19,8 @@ describe EmployeeManage::Fire do
   describe 'set' do
     before { described_class.call(parent) }
 
-    it '#fired_status to true' do
-      expect(parent.fired_status).to eq true
+    it '#hided_status to true' do
+      expect(parent.hided_status).to eq true
     end
 
     it '#ancestry to nil' do
@@ -36,12 +36,12 @@ describe EmployeeManage::Fire do
       is_expected.to eq grandparent.id
     end
 
-    it 'first real parent if actual parent #fired?' do
-      grandparent.update(parent: some_user)
-      described_class.call(grandparent) # do it fired
+    it 'first real parent if actual parent #hided?' do
+      grandparent.update(parent: some_monkey)
+      described_class.call(grandparent)
 
       described_class.call(parent)
-      is_expected.to eq some_user.id
+      is_expected.to eq some_monkey.id
     end
 
     it 'nil if no parent' do
@@ -65,15 +65,15 @@ describe EmployeeManage::Fire do
       is_expected.to include child.id
     end
 
-    it 'of previously fired children' do
-      some_user.update parent_id: parent.id
+    it 'of previously hided children' do
+      some_monkey.update parent_id: parent.id
       parent.reload
 
-      described_class.call(some_user)
-      expect(parent.child_ids).not_to include some_user.id
+      described_class.call(some_monkey)
+      expect(parent.child_ids).not_to include some_monkey.id
 
       described_class.call(parent)
-      is_expected.to include some_user.id
+      is_expected.to include some_monkey.id
     end
   end
 
@@ -85,11 +85,11 @@ describe EmployeeManage::Fire do
       is_expected.to eq grandparent.id
     end
 
-    it 'of fired parent if present' do
-      grandparent.update parent: some_user
-      described_class.call(grandparent) # do it fired
+    it 'of hided parent if present' do
+      grandparent.update parent: some_monkey
+      described_class.call(grandparent)
 
-      expect(parent.reload.parent).to eq some_user
+      expect(parent.reload.parent).to eq some_monkey
 
       described_class.call(parent)
       is_expected.to eq grandparent.id 

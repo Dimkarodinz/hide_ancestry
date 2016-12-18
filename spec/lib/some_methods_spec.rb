@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-shared_examples 'EmployeeManageMethods owner' do |main_model|
-  unless main_model.respond_to? :has_employee_manage_methods
-    before { skip "Methods not included in #{main_model}"}
+shared_examples 'HideAncestry::InstanceMethods owner' do |main_model|
+  unless main_model.respond_to? :has_hide_ancestry
+    before { skip "has_hide_ancestry not included in #{main_model}"}
   end
 
   describe EmployeeManageMethods do
     context '.has_employee_manage_methods' do
       it 'include EmployeeManageMethods::Errors' do
-        expect(main_model.include? EmployeeManageMethods::Errors)
+        expect(main_model.include? HideAncestry::Errors)
         .to be_truthy
       end
 
       it 'include EmployeeManageMethods::InstanceMethods' do
-        expect(main_model.include? EmployeeManageMethods::InstanceMethods)
+        expect(main_model.include? HideAncestry::InstanceMethods)
         .to be_truthy
       end
 
@@ -22,16 +22,16 @@ shared_examples 'EmployeeManageMethods owner' do |main_model|
 
         it { is_expected.to respond_to :fired }
         it { is_expected.to respond_to :unfired }
-        it { is_expected.to respond_to :fired_users }
+        it { is_expected.to respond_to :fired_monkeys }
         it { is_expected.to respond_to :fired_childs }
       end
     end
   end
 
-  describe EmployeeManageMethods::InstanceMethods do
-    # Means that main_model is an User
-    unless main_model.eql? User
-      before { skip "#{main_model} is not a User"}
+  describe HideAncestry::InstanceMethods do
+    # Means that main_model is an Monkey
+    unless main_model.eql? Monkey
+      before { skip "#{main_model} is not a Monkey"}
     end
 
     context '#first_firing?' do
@@ -61,13 +61,13 @@ shared_examples 'EmployeeManageMethods owner' do |main_model|
       subject { child.reload.fired_parent_changed? }
 
       it 'true if node grandparent != fired parent old parent' do
-        EmployeeManage::Fire.call(parent)
+        HideAncestry::ModelManage::Hide.call(parent)
         allow(child).to receive(:parent_id).and_return 111
         is_expected.to be_truthy
       end
 
       it 'false if node grandparent == fired parent old parent' do
-        EmployeeManage::Fire.call(parent)
+        HideAncestry::ModelManage::Hide.call(parent)
         is_expected.to be_falsey
       end
 
@@ -78,7 +78,7 @@ shared_examples 'EmployeeManageMethods owner' do |main_model|
     end
 
     context '#fired_parent' do
-      before { EmployeeManage::Fire.call(grandparent) }
+      before { HideAncestry::ModelManage::Hide.call(grandparent) }
 
       it 'return record#fired? which ' \
          'includes node#id in #old_child_ids' do
@@ -93,7 +93,7 @@ shared_examples 'EmployeeManageMethods owner' do |main_model|
     end
 
     context '#fired_descendants_ids' do
-      before { EmployeeManage::Fire.call(parent) }
+      before { HideAncestry::ModelManage::Hide.call(parent) }
 
       it 'return ids nodes#fired?, ' \
          'which #old_parent_id eql to descendants ids' do
@@ -104,10 +104,10 @@ shared_examples 'EmployeeManageMethods owner' do |main_model|
     end
 
     context '#find_first_real_parent' do
-      let(:new_user) { create :user }
+      let(:new_monkey) { create :monkey }
 
       it 'find record by #old_parent_id' do
-        EmployeeManage::Fire.call(parent)
+        HideAncestry::ModelManage::Hide.call(parent)
 
         expect(parent.reload.parent).to be_nil
         expect(parent.find_first_real_parent).to eq grandparent
@@ -119,8 +119,8 @@ shared_examples 'EmployeeManageMethods owner' do |main_model|
       end
 
       it 'call itself to finded if record#fired?' do
-        EmployeeManage::Fire.call(parent)
-        EmployeeManage::Fire.call(child)
+        HideAncestry::ModelManage::Hide.call(parent)
+        HideAncestry::ModelManage::Hide.call(child)
         expect(child.find_first_real_parent).to eq grandparent
       end
     end

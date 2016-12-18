@@ -83,7 +83,7 @@ module HideAncestry
       # Makes alternate #ancestry, including node#id
       def make_alternate_ancestry instance, custom_parent = nil
         if custom_parent
-          ids = custom_parent.hide_ancestry_path_ids << instance.id
+          ids = custom_parent.hide_ancestry_ids << instance.id
           ids.join('/')
 
         # If hide_ancestry blank

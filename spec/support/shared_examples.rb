@@ -7,7 +7,7 @@ module SharedExamples
 
   shared_examples 'successfully restored nodes' do
     it do
-      expect(grandparent.full_ancestry_path).to eq grand_prev_anc_path
+      expect(grandparent.hide_ancestry).to eq grand_prev_anc_path
     end
 
     it do
@@ -15,7 +15,7 @@ module SharedExamples
     end
 
     it do
-      expect(parent.full_ancestry_path).to eq parent_prev_anc_path
+      expect(parent.hide_ancestry).to eq parent_prev_anc_path
     end
 
     it do

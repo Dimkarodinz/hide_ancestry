@@ -22,8 +22,8 @@ module HideAncestry
       hided_status == true
     end
 
-    def hide_ancestry_path_ids
-      self.hide_ancestry.split('/').map(&:to_i)
+    def hide_ancestry_ids
+      hide_ancestry.split('/').map(&:to_i) if hide_ancestry
     end
 
     def children_of_hided

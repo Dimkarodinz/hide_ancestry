@@ -1,27 +1,27 @@
 require 'spec_helper'
 
-describe EmployeeManage::CustomAncestryUpdater do
-  include_examples '.user factories'
+describe HideAncestry::ModelManage::CustomAncestryUpdater do
+  include_examples 'Monkeys subtree'
 
   describe 'when node#parent changed' do
     describe 'update custom ancestry cols' do
-      let!(:root_user) { create :user }
+      let!(:root_monkey) { create :monkey }
 
-      let!(:old_path_ids) { grandparent.full_ancestry_path_ids }
+      let!(:old_path_ids) { grandparent.hide_ancestry_ids }
       let!(:old_depth)    { grandparent.depth_level }
 
-      let!(:old_parent_path_ids) { parent.full_ancestry_path_ids }
-      let!(:old_child_path_ids)  { child.full_ancestry_path_ids }
+      let!(:old_parent_path_ids) { parent.hide_ancestry_ids }
+      let!(:old_child_path_ids)  { child.hide_ancestry_ids }
 
       let!(:old_parent_depth) { parent.depth_level }
       let!(:old_child_depth)  { child.depth_level }
 
-      before { grandparent.update parent: root_user }
+      before { grandparent.update parent: root_monkey }
 
-      it 'node#full_ancestry_path' do
-        expect(grandparent.reload.full_ancestry_path_ids)
+      it 'node#hide_ancestry' do
+        expect(grandparent.reload.hide_ancestry_ids)
         .not_to eq old_path_ids
-        expect(grandparent.full_ancestry_path_ids).to include root_user.id
+        expect(grandparent.hide_ancestry_ids).to include root_monkey.id
       end
 
       it 'node#depth_level' do
@@ -30,19 +30,19 @@ describe EmployeeManage::CustomAncestryUpdater do
       end
 
       context 'of node#descendants' do
-        describe '#full_ancestry_path of' do
+        describe '#hide_ancestry of' do
           it 'parent' do
-            expect(parent.reload.full_ancestry_path_ids)
+            expect(parent.reload.hide_ancestry_ids)
             .not_to eq old_parent_path_ids
 
-            expect(parent.full_ancestry_path_ids).to include root_user.id
+            expect(parent.hide_ancestry_ids).to include root_monkey.id
           end
 
           it 'child' do
-            expect(child.reload.full_ancestry_path_ids)
+            expect(child.reload.hide_ancestry_ids)
             .not_to eq old_child_path_ids
 
-            expect(child.full_ancestry_path_ids).to include root_user.id
+            expect(child.hide_ancestry_ids).to include root_monkey.id
           end
         end
 
@@ -68,9 +68,9 @@ describe EmployeeManage::CustomAncestryUpdater do
       context 'update child' do
         before { subject }
 
-        it '#full_ancestry_path' do
-          expect(child.reload.full_ancestry_path_ids).to include parent.id
-          expect(child.full_ancestry_path_ids).not_to include grandparent.id
+        it '#hide_ancestry' do
+          expect(child.reload.hide_ancestry_ids).to include parent.id
+          expect(child.hide_ancestry_ids).not_to include grandparent.id
         end
 
         it '#depth_level' do
@@ -79,18 +79,21 @@ describe EmployeeManage::CustomAncestryUpdater do
       end
 
       context 'not update parent of node' do
-        let(:prev_grand_full_anc) { grandparent.full_ancestry_path }
+        let(:prev_grand_full_anc) { grandparent.hide_ancestry }
         let(:prev_grand_depth_l)  { grandparent.depth_level }
 
-        it '#full_ancestry_path' do
-          prev_grand_full_anc; subject
+        it '#hide_ancestry' do
+          prev_grand_full_anc
+          subject
 
-          expect(grandparent.reload.full_ancestry_path)
+          expect(grandparent.reload.hide_ancestry)
           .to eq prev_grand_full_anc
         end
 
         it '#depth_level' do
-          prev_grand_depth_l; subject
+          prev_grand_depth_l
+          subject
+
           expect(grandparent.reload.depth_level).to eq prev_grand_depth_l
         end
       end
@@ -99,9 +102,9 @@ describe EmployeeManage::CustomAncestryUpdater do
     context 'of child update child' do
       before { child.update parent: nil }
 
-      it '#full_ancestry_path' do
-        expect(child.reload.full_ancestry_path).to eq child.id.to_s
-        expect(child.full_ancestry_path_ids).not_to include parent.id
+      it '#hide_ancestry' do
+        expect(child.reload.hide_ancestry).to eq child.id.to_s
+        expect(child.hide_ancestry_ids).not_to include parent.id
       end
 
       it '#depth_level' do

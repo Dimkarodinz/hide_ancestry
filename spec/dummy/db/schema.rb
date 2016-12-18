@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161217182719) do
+ActiveRecord::Schema.define(version: 20161218161330) do
 
   create_table "bonobos", force: :cascade do |t|
     t.datetime "created_at",                    null: false
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20161217182719) do
     t.string   "hide_ancestry"
     t.boolean  "hided_status",  default: false
     t.string   "depth_level"
+    t.string   "name"
   end
 
   add_index "monkeys", ["ancestry"], name: "index_monkeys_on_ancestry"

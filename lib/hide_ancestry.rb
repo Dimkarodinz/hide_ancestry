@@ -35,7 +35,7 @@ module HideAncestry
       end
 
       after_save do |record|
-        ModelManage::CustomAncestryUpdater.call(self)
+        ModelManage::CustomAncestryUpdater.call(record)
       end
 
       # For node#hided? when it trying to change #parent_id
