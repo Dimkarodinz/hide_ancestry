@@ -1,6 +1,6 @@
-shared_examples 'hide_ancestry instance methods owner' do |main_model|
+shared_examples 'hide_ancestry instance methods owner' do
   context do
-    subject { main_model.new }
+    subject { described_class.new }
 
     it { is_expected.to respond_to :hide }
     it { is_expected.to respond_to :restore }

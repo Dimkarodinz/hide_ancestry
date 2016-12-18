@@ -74,7 +74,7 @@ $ User.find(4).subtree
             <id: 3, name: 'Child', hided_status: false, ancestry: '1/2/3', hide_ancestry: '4/1/2/3'>
 ```
 
-+ You can change ancestry subtree as you want after node`s hiding. Hided node still can be restored to previous parent and still will join correctly it old descendants (unless you changed descendant`s parent).
++ You can change ancestry subtree as you want after node hiding. Hided node still can be restored to previous parent and still will join correctly it old descendants (unless you changed descendant`s parent).
 + Hided nodes have nil ancestry columns - no any actual parents or descendants present. 
 
 ### Installation

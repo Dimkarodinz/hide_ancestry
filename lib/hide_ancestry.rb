@@ -28,8 +28,8 @@ module HideAncestry
         end
       end
 
-      # $hided_column = options[:use_column] ? options[:use_column] : :hided_status
-      $hided_column = :hided_status
+      cattr_accessor :hided_column
+      self.hided_column = options[:use_column] || :hided_status
 
       # Include validation errors to the model
       include Errors
@@ -39,8 +39,8 @@ module HideAncestry
 
       serialize :old_child_ids, Array
 
-      scope :hided,   -> { where $hided_column => true }
-      scope :unhided, -> { where.not($hided_column => true) }
+      scope :hided,   -> { where hided_column => true }
+      scope :unhided, -> { where.not(hided_column => true) }
       scope :hided_nodes,  -> (ids) { hided.where id: ids }
       scope :hided_childs, -> (some_id) { hided.where old_parent_id: some_id }
 

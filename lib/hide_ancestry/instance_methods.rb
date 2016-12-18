@@ -7,7 +7,7 @@ module HideAncestry
 
     def restore
       return not_valid_error unless valid?
-      return already_restored_error unless public_send($hided_column) == true
+      return already_restored_error unless public_send(hided_column) == true
       HideAncestry::ModelManage::Restore.call(self)
     end
 
@@ -18,8 +18,7 @@ module HideAncestry
     end
 
     def hided?
-      self.public_send($hided_column) == true
-      # hided_status == true
+      self.public_send(hided_column) == true
     end
 
     def hide_ancestry_ids

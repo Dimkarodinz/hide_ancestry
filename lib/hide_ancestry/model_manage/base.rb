@@ -18,7 +18,7 @@ module HideAncestry
       end
 
       def change_hided_status(boolean)
-        instance.update_attribute $hided_column, boolean
+        instance.update_attribute instance.hided_column, boolean
       end
     end
   end
