@@ -4,13 +4,13 @@ module HasHideAncestry
   class_methods do
     def has_hide_ancestry options = {}
       # Check options
-      raise HideAncestryExeption.new(
+      raise HideAncestry::HideAncestryExeption.new(
         'Options for has_hide_ancestry must be in a hash'
         ) unless options.is_a? Hash
 
       options.each do |key, value|
         unless [:use_column].include? key
-          raise HideAncestryExeption.new(
+          raise HideAncestry::HideAncestryExeption.new(
             "Unknown option for has_hide_ancestry: " \
             "#{key.inspect} => #{value.inspect}"
             )

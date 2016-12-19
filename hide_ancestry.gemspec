@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Dimkarodinz"]
   s.email       = ["dimkarodin@gmail.com"]
   s.homepage    = "https://github.com/Dimkarodinz/hide_ancestry"
-  s.summary     = "Hide and restore ancestry nodes"
-  s.description = "Hide and restore nodes with ancestry gem"
+  s.summary     = "Hide and restore ancestry gem nodes"
+  s.description = "Hide and restore nodes of ancestry gem"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
