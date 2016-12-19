@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20161219150554) do
     t.integer  "old_parent_id"
     t.text     "old_child_ids"
     t.string   "hide_ancestry"
-    t.boolean  "hiden_status",  default: false
+    t.boolean  "hidden_status", default: false
     t.string   "name"
   end
 

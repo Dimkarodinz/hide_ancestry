@@ -14,11 +14,11 @@ module HideAncestry
       private
 
       def find_actual_parent(instance)
-        instance.hiden_parent ? instance.hiden_parent : instance.parent
+        instance.hidden_parent ? instance.hidden_parent : instance.parent
       end
 
-      def change_hiden_status(boolean)
-        instance.update_attribute instance.hiden_column, boolean
+      def change_hidden_status(boolean)
+        instance.update_attribute instance.hidden_column, boolean
       end
     end
   end

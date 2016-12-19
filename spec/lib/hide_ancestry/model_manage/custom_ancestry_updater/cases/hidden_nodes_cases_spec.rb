@@ -5,7 +5,7 @@ describe HideAncestry::ModelManage::CustomAncestryUpdater do
 
   let(:root_monkey) { create :monkey }
 
-  describe 'when #hiden_status' do
+  describe 'when #hidden_status' do
     context 'does not change custom ancestry cols' do
       context 'of called node' do
         let!(:before_hide_ancestry) { parent.hide_ancestry }
@@ -34,8 +34,8 @@ describe HideAncestry::ModelManage::CustomAncestryUpdater do
       end
     end
 
-    context 'and parent of hiden node changes its parent' do
-      let!(:old_hiden_path)  { parent.hide_ancestry_ids }
+    context 'and parent of hidden node changes its parent' do
+      let!(:old_hidden_path)  { parent.hide_ancestry_ids }
 
       let(:new_parent) { create :monkey }
 
@@ -46,13 +46,13 @@ describe HideAncestry::ModelManage::CustomAncestryUpdater do
 
       it 'node#hide_ancestry changes' do
         expect(parent.reload.hide_ancestry_ids).to include new_parent.id
-        expect(parent.hide_ancestry_ids).not_to eq old_hiden_path
+        expect(parent.hide_ancestry_ids).not_to eq old_hidden_path
       end
     end
   end
 
-  describe 'and parent of hiden node changes its parent' do
-    let!(:old_hiden_path)  { parent.hide_ancestry_ids }
+  describe 'and parent of hidden node changes its parent' do
+    let!(:old_hidden_path)  { parent.hide_ancestry_ids }
 
     let(:new_parent) { create :monkey }
 
@@ -63,12 +63,12 @@ describe HideAncestry::ModelManage::CustomAncestryUpdater do
 
     it 'node#hide_ancestry changes' do
       expect(parent.reload.hide_ancestry_ids).to include new_parent.id
-      expect(parent.hide_ancestry_ids).not_to eq old_hiden_path
+      expect(parent.hide_ancestry_ids).not_to eq old_hidden_path
     end
   end
 
   describe do
-    context 'hiden parent, child changes path' do
+    context 'hidden parent, child changes path' do
       before do
         parent.hide
         child.update parent: root_monkey
@@ -81,7 +81,7 @@ describe HideAncestry::ModelManage::CustomAncestryUpdater do
       it { expect(subject).not_to include grandparent.id }
     end
 
-    context 'hiden parent, child does not changes path' do
+    context 'hidden parent, child does not changes path' do
       before { parent.hide }
 
       subject { child.reload.hide_ancestry_ids }
@@ -91,15 +91,15 @@ describe HideAncestry::ModelManage::CustomAncestryUpdater do
     end
   end
 
-  describe 'hiden parent, changed subtree' do
-    let!(:some_hiden_monkey) { create :hiden_monkey }
+  describe 'hidden parent, changed subtree' do
+    let!(:some_hidden_monkey) { create :hidden_monkey }
 
     before do
       parent.hide
       grandparent.update parent: root_monkey
     end
 
-    it 'changes #hide_ancestry of subtree hiden monkeys' do
+    it 'changes #hide_ancestry of subtree hidden monkeys' do
       expect(parent.reload.hide_ancestry_ids).to include root_monkey.id
     end
   end

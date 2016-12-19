@@ -17,8 +17,8 @@ module HasHideAncestry
         end
       end
 
-      cattr_accessor :hiden_column
-      self.hiden_column = options[:use_column] || :hiden_status
+      cattr_accessor :hidden_column
+      self.hidden_column = options[:use_column] || :hidden_status
 
       # Include validation errors to the model
       include HideAncestry::Validators
@@ -28,10 +28,10 @@ module HasHideAncestry
 
       serialize :old_child_ids, Array
 
-      scope :hiden,   -> { where hiden_column => true }
-      scope :unhiden, -> { where.not(hiden_column => true) }
-      scope :hiden_nodes,  -> (ids) { hiden.where id: ids }
-      scope :hiden_childs, -> (some_id) { hiden.where old_parent_id: some_id }
+      scope :hidden,   -> { where hidden_column => true }
+      scope :unhidden, -> { where.not(hidden_column => true) }
+      scope :hidden_nodes,  -> (ids) { hidden.where id: ids }
+      scope :hidden_childs, -> (some_id) { hidden.where old_parent_id: some_id }
 
       # Persist record changes for correct work of #previous_changes
       before_save do |record|
@@ -42,8 +42,8 @@ module HasHideAncestry
         HideAncestry::ModelManage::CustomAncestryUpdater.call(record)
       end
 
-      # hiden node can not change ancestry
-      validate :can_not_has_parent_or_children, if: -> { hiden? }
+      # hidden node can not change ancestry
+      validate :can_not_has_parent_or_children, if: -> { hidden? }
     end
   end
 end

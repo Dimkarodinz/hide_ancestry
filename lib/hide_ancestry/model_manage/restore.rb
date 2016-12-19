@@ -5,7 +5,7 @@ module HideAncestry
         instance.reload
         restore_parent
         restore_children
-        change_hiden_status(false)
+        change_hidden_status(false)
       end
 
       private
@@ -21,7 +21,7 @@ module HideAncestry
           child = instance.class.find_by id: child_id
 
           next unless child
-          next if child.hiden?
+          next if child.hidden?
 
           child.update_attribute :parent_id, instance.id
         end

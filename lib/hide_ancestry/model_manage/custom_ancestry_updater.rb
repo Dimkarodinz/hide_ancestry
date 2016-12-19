@@ -2,63 +2,63 @@ module HideAncestry
   module ModelManage
     class CustomAncestryUpdater < Base
       def call
-        # If descendant of hiden node will change its parent
-        clean_instance_from_hiden_parent if instance.hiden_parent_changed?
-        change_hide_ancestry_col(instance) unless instance.hiden?
+        # If descendant of hidden node will change its parent
+        clean_instance_from_hidden_parent if instance.hidden_parent_changed?
+        change_hide_ancestry_col(instance) unless instance.hidden?
 
         # First, general iteration; useful when node updated
         instance.children.each { |child| update_each_child(child, instance) }
 
-        # Fix nodes with #hiden? and its descendant nodes
-        instance.hiden_children.each do |hiden_children|
-          update_hiden_with_descendants(hiden_children, instance)
+        # Fix nodes with #hidden? and its descendant nodes
+        instance.hidden_children.each do |hidden_children|
+          update_hidden_with_descendants(hidden_children, instance)
         end
       end
 
       private
 
       def change_hide_ancestry_col(instance, custom_parent = nil)
-        custom_parent = instance.hiden_parent unless custom_parent
+        custom_parent = instance.hidden_parent unless custom_parent
         set_hide_ancestry(instance, custom_parent)
       end
 
       # Remove node_1#id from node_2#old_child_ids;
-      # node_2 should be hiden
-      def clean_instance_from_hiden_parent
-        return if instance.hiden?
+      # node_2 should be hidden
+      def clean_instance_from_hidden_parent
+        return if instance.hidden?
 
         new_array =
-          instance.hiden_parent&.old_child_ids.reject { |el| el == instance.id }
-        instance.hiden_parent
+          instance.hidden_parent&.old_child_ids.reject { |el| el == instance.id }
+        instance.hidden_parent
             .update_attribute(:old_child_ids, new_array)
       end
 
       def update_each_child(instance, parent)
         change_hide_ancestry_col(instance, parent)
-        update_hiden_children_cols(instance) if instance.hiden_children_present?
+        update_hidden_children_cols(instance) if instance.hidden_children_present?
 
         instance.children.each { |child| update_each_child(child, instance) }
       end
 
-      # Udpate alternate ancestry cols of node#hiden? and its descendant
-      def update_hiden_with_descendants(instance, parent)
+      # Udpate alternate ancestry cols of node#hidden? and its descendant
+      def update_hidden_with_descendants(instance, parent)
         change_hide_ancestry_col(instance, parent)
 
-        if instance.hiden?
-          instance.children_of_hiden.each do |child|
-            update_hiden_with_descendants(child, instance)
+        if instance.hidden?
+          instance.children_of_hidden.each do |child|
+            update_hidden_with_descendants(child, instance)
           end
         else
           instance.children.each do |child|
-            update_hiden_children_cols(child) if instance.hiden_children_present?
-            update_hiden_with_descendants(child, instance)
+            update_hidden_children_cols(child) if instance.hidden_children_present?
+            update_hidden_with_descendants(child, instance)
           end      
         end
       end
 
-      def update_hiden_children_cols(instance)
-        instance.hiden_children.each do |hiden_child|
-          change_hide_ancestry_col(hiden_child, instance)
+      def update_hidden_children_cols(instance)
+        instance.hidden_children.each do |hidden_child|
+          change_hide_ancestry_col(hidden_child, instance)
         end
       end
 

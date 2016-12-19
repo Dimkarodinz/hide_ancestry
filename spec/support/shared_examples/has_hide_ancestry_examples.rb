@@ -15,10 +15,10 @@ shared_examples '.has_hide_ancestry owner' do |false_expectation|
     context 'scopes' do
       subject { described_class }
 
-      it { is_expected.public_send predicate_matcher, respond_to(:hiden) }
-      it { is_expected.public_send predicate_matcher, respond_to(:unhiden) }
-      it { is_expected.public_send predicate_matcher, respond_to(:hiden_nodes) }
-      it { is_expected.public_send predicate_matcher, respond_to(:hiden_childs) }
+      it { is_expected.public_send predicate_matcher, respond_to(:hidden) }
+      it { is_expected.public_send predicate_matcher, respond_to(:unhidden) }
+      it { is_expected.public_send predicate_matcher, respond_to(:hidden_nodes) }
+      it { is_expected.public_send predicate_matcher, respond_to(:hidden_childs) }
     end
   end
 end

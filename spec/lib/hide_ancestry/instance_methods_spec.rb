@@ -18,23 +18,23 @@ describe HideAncestry::InstanceMethods do
   end
 
   context '#restore' do
-    let(:hiden) { create :hiden_monkey }
+    let(:hidden) { create :hidden_monkey }
 
     it 'return #not_valid_error unless #valid?' do
-      allow(hiden).to receive(:valid?).and_return false
-      hiden.restore
-      expect(hiden.errors[:base].first).to include 'not valid'
+      allow(hidden).to receive(:valid?).and_return false
+      hidden.restore
+      expect(hidden.errors[:base].first).to include 'not valid'
     end
 
-    it 'return #already_restored_error unless hiden' do
+    it 'return #already_restored_error unless hidden' do
       parent.restore
       expect(parent.errors[:base].first).to include 'Already restored'
     end
 
     it do
       expect(HideAncestry::ModelManage::Restore)
-      .to receive(:call).with(hiden)
-      hiden.restore
+      .to receive(:call).with(hidden)
+      hidden.restore
     end
   end
 
@@ -61,49 +61,49 @@ describe HideAncestry::InstanceMethods do
     end
   end
 
-  context '#hiden_parent_changed?' do
-    subject { child.reload.hiden_parent_changed? }
+  context '#hidden_parent_changed?' do
+    subject { child.reload.hidden_parent_changed? }
 
-    it 'true if node grandparent != hiden parent old parent' do
+    it 'true if node grandparent != hidden parent old parent' do
       HideAncestry::ModelManage::Hide.call(parent)
       allow(child).to receive(:parent_id).and_return 111
       is_expected.to be_truthy
     end
 
-    it 'false if node grandparent == hiden parent old parent' do
+    it 'false if node grandparent == hidden parent old parent' do
       HideAncestry::ModelManage::Hide.call(parent)
       is_expected.to be_falsey
     end
 
-    it 'false if no hiden parent' do
-      allow(child).to receive(:hiden_parent).and_return nil
+    it 'false if no hidden parent' do
+      allow(child).to receive(:hidden_parent).and_return nil
       is_expected.to be_falsey
     end
   end
 
-  context '#hiden_parent' do
+  context '#hidden_parent' do
     before { HideAncestry::ModelManage::Hide.call(grandparent) }
 
-    it 'return record#hiden? which ' \
+    it 'return record#hidden? which ' \
        'includes node#id in #old_child_ids' do
-      expect(parent.hiden_parent).to eq grandparent
+      expect(parent.hidden_parent).to eq grandparent
       expect(parent.reload.parent).to be_nil
     end
 
-    it 'return nil if no record#hiden? ' \
+    it 'return nil if no record#hidden? ' \
        'with node#id in #old_child_ids' do
-      expect(child.hiden_parent).to be_nil
+      expect(child.hidden_parent).to be_nil
     end
   end
 
-  context '#hiden_descendants_ids' do
+  context '#hidden_descendants_ids' do
     before { HideAncestry::ModelManage::Hide.call(parent) }
 
-    it 'return ids nodes#hiden?, ' \
+    it 'return ids nodes#hidden?, ' \
        'which #old_parent_id eql to descendants ids' do
 
-      expect(grandparent.hiden_descendants_ids).to include parent.id
-      expect(child.hiden_descendants_ids).to be_blank
+      expect(grandparent.hidden_descendants_ids).to include parent.id
+      expect(child.hidden_descendants_ids).to be_blank
     end
   end
 
@@ -122,18 +122,18 @@ describe HideAncestry::InstanceMethods do
       expect(grandparent.find_first_real_parent).to be_nil
     end
 
-    it 'call itself to finded if record#hiden?' do
+    it 'call itself to finded if record#hidden?' do
       HideAncestry::ModelManage::Hide.call(parent)
       HideAncestry::ModelManage::Hide.call(child)
       expect(child.find_first_real_parent).to eq grandparent
     end
   end
 
-  context '#depth_with_hiden' do
+  context '#depth_with_hidden' do
     it 'return #size of #hide_ancestry_ids' do
       ids = [1, 2, 3]
       allow(parent).to receive(:hide_ancestry_ids).and_return(ids)
-      expect(parent.depth_with_hiden).to eq 3
+      expect(parent.depth_with_hidden).to eq 3
     end
   end
 
@@ -146,17 +146,17 @@ describe HideAncestry::InstanceMethods do
     end
   end
 
-  context '#subtree_with_hiden' do
+  context '#subtree_with_hidden' do
     it 'calls subtree ids as array' do
       expect(parent).to receive_message_chain('subtree.pluck')
                         .with(:id)
                         .and_return []
 
-      parent.subtree_with_hiden
+      parent.subtree_with_hidden
     end
 
     context 'return ordered relation' do
-      let(:relation) { grandparent.subtree_with_hiden }
+      let(:relation) { grandparent.subtree_with_hidden }
 
       after do
         expect(relation.first.id).to eq grandparent.id
@@ -168,7 +168,7 @@ describe HideAncestry::InstanceMethods do
         relation
       end
 
-      it 'return ordered relation even node is hiden' do
+      it 'return ordered relation even node is hidden' do
         parent.hide
         relation
       end
