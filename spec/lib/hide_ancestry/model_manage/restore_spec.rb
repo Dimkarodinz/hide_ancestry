@@ -12,7 +12,7 @@ describe HideAncestry::ModelManage::Restore do
       it { is_expected.to receive :restore_children }
 
       it do
-        is_expected.to receive(:change_hided_status).with false
+        is_expected.to receive(:change_hiden_status).with false
       end
     end
  
@@ -33,8 +33,8 @@ describe HideAncestry::ModelManage::Restore do
     end
 
     context 'restore children' do
-      it 'doesn`t restore hided children' do
-        allow(child).to receive(:hided?).and_return true
+      it 'doesn`t restore hiden children' do
+        allow(child).to receive(:hiden?).and_return true
         described_class.call(grandparent)
         expect(grandparent.reload.child_ids).not_to include child.id
       end
@@ -62,12 +62,12 @@ describe HideAncestry::ModelManage::Restore do
       end
     end
 
-    context 'change #hided_status' do
-      before { parent.update_attribute :hided_status, true }
+    context 'change #hiden_status' do
+      before { parent.update_attribute :hiden_status, true }
 
       it 'to false' do
         described_class.call(parent)
-        expect(parent.hided_status).to be_falsey
+        expect(parent.hiden_status).to be_falsey
       end
     end
 

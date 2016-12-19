@@ -8,7 +8,7 @@ describe HideAncestry::ModelManage::Hide do
     subject { described_class.new(parent) }
     after   { subject.call }
 
-    it { is_expected.to receive(:change_hided_status).with(true) }
+    it { is_expected.to receive(:change_hiden_status).with(true) }
     it { is_expected.to receive :save_parent_id }
     it { is_expected.to receive :save_child_ids }
 
@@ -19,8 +19,8 @@ describe HideAncestry::ModelManage::Hide do
   describe 'set' do
     before { described_class.call(parent) }
 
-    it '#hided_status to true' do
-      expect(parent.hided_status).to eq true
+    it '#hiden_status to true' do
+      expect(parent.hiden_status).to eq true
     end
 
     it '#ancestry to nil' do
@@ -36,7 +36,7 @@ describe HideAncestry::ModelManage::Hide do
       is_expected.to eq grandparent.id
     end
 
-    it 'first real parent if actual parent #hided?' do
+    it 'first real parent if actual parent #hiden?' do
       grandparent.update(parent: some_monkey)
       described_class.call(grandparent)
 
@@ -65,7 +65,7 @@ describe HideAncestry::ModelManage::Hide do
       is_expected.to include child.id
     end
 
-    it 'of previously hided children' do
+    it 'of previously hiden children' do
       some_monkey.update parent_id: parent.id
       parent.reload
 
@@ -85,7 +85,7 @@ describe HideAncestry::ModelManage::Hide do
       is_expected.to eq grandparent.id
     end
 
-    it 'of hided parent if present' do
+    it 'of hiden parent if present' do
       grandparent.update parent: some_monkey
       described_class.call(grandparent)
 

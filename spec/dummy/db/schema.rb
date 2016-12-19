@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161218161330) do
+ActiveRecord::Schema.define(version: 20161219150554) do
 
   create_table "bonobos", force: :cascade do |t|
     t.datetime "created_at",                    null: false
@@ -25,6 +25,12 @@ ActiveRecord::Schema.define(version: 20161218161330) do
 
   add_index "bonobos", ["ancestry"], name: "index_bonobos_on_ancestry"
 
+  create_table "chimpanzees", force: :cascade do |t|
+    t.string "ancestry"
+  end
+
+  add_index "chimpanzees", ["ancestry"], name: "index_chimpanzees_on_ancestry"
+
   create_table "monkeys", force: :cascade do |t|
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
@@ -32,7 +38,7 @@ ActiveRecord::Schema.define(version: 20161218161330) do
     t.integer  "old_parent_id"
     t.text     "old_child_ids"
     t.string   "hide_ancestry"
-    t.boolean  "hided_status",  default: false
+    t.boolean  "hiden_status",  default: false
     t.string   "name"
   end
 

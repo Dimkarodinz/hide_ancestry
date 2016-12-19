@@ -5,7 +5,7 @@ module HideAncestry
     def can_not_has_parent_or_children_error
       errors.add(
         :base,
-        "Hided node can`t has any real parent or children"
+        "hiden node can`t has any real parent or children"
         ) if self.ancestry.present?
     end
 

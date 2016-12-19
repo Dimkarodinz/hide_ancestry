@@ -3,7 +3,7 @@ module HideAncestry
     class Hide < Base
       def call
         instance.reload
-        change_hided_status(true)
+        change_hiden_status(true)
         save_parent_id
 
         save_child_ids
@@ -20,7 +20,7 @@ module HideAncestry
 
       def save_child_ids
         actual_children = []
-        collections     = [:children, :hided_children]
+        collections     = [:children, :hiden_children]
 
         collections.each { |coll| save_sub_ids(coll, actual_children) }
 

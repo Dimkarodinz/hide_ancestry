@@ -4,10 +4,10 @@ class HideAncestryMigrationGenerator < Rails::Generators::Base
   source_root  File.expand_path('../templates', __FILE__)
   argument     :table_name, type: :string
 
-  class_option :hided_status,
+  class_option :hiden_status,
                 type: :boolean,
                 default: true,
-                desc: 'Create hided_status:boolean column'
+                desc: 'Create hiden_status:boolean column'
 
   def create_migration_file_in_app
     migration_template(

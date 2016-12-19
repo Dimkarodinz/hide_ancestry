@@ -12,6 +12,7 @@ require 'hide_ancestry/model_manage/restore'
 
 module HideAncestry
   extend ActiveSupport::Concern
+
   class_methods do
     def has_hide_ancestry options = {}
       # Check options
@@ -28,8 +29,8 @@ module HideAncestry
         end
       end
 
-      cattr_accessor :hided_column
-      self.hided_column = options[:use_column] || :hided_status
+      cattr_accessor :hiden_column
+      self.hiden_column = options[:use_column] || :hiden_status
 
       # Include validation errors to the model
       include Errors
@@ -39,10 +40,10 @@ module HideAncestry
 
       serialize :old_child_ids, Array
 
-      scope :hided,   -> { where hided_column => true }
-      scope :unhided, -> { where.not(hided_column => true) }
-      scope :hided_nodes,  -> (ids) { hided.where id: ids }
-      scope :hided_childs, -> (some_id) { hided.where old_parent_id: some_id }
+      scope :hiden,   -> { where hiden_column => true }
+      scope :unhiden, -> { where.not(hiden_column => true) }
+      scope :hiden_nodes,  -> (ids) { hiden.where id: ids }
+      scope :hiden_childs, -> (some_id) { hiden.where old_parent_id: some_id }
 
       # Persist record changes for correct work of #previous_changes
       before_save do |record|
@@ -53,8 +54,8 @@ module HideAncestry
         ModelManage::CustomAncestryUpdater.call(record)
       end
 
-      # Hided node can not change ancestry
-      validate :can_not_has_parent_or_children_error, if: -> { hided? }
+      # hiden node can not change ancestry
+      validate :can_not_has_parent_or_children_error, if: -> { hiden? }
     end
   end
 end
