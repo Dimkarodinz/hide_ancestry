@@ -3,7 +3,7 @@ shared_examples '.has_hide_ancestry owner' do |false_expectation|
 
   describe '.has_hide_ancestry' do
     it 'include EmployeeManageMethods::Errors' do
-      expect(described_class.include? HideAncestry::Errors)
+      expect(described_class.include? HideAncestry::Validators)
       .public_send predicate_matcher, be_truthy
     end
 

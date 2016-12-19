@@ -1,19 +1,19 @@
 module HideAncestry
-  module Errors
+  module Validators
     private
 
-    def can_not_has_parent_or_children_error
+    def can_not_has_parent_or_children
       errors.add(
         :base,
         "hiden node can`t has any real parent or children"
         ) if self.ancestry.present?
     end
 
-    def already_restored_error
+    def already_restored
       errors.add :base, 'Already restored'
     end
 
-    def not_valid_error
+    def not_valid
       errors.add :base, "#{self.class} is not valid"
     end
   end

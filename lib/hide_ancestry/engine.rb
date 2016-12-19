@@ -9,7 +9,7 @@ module HideAncestry
 
     config.to_prepare do    
       # Include the extension 
-      ActiveRecord::Base.send :include, HideAncestry
+      ActiveRecord::Base.send :include, HasHiddenAncestry
     end
   end
 end

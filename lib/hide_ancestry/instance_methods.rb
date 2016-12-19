@@ -1,13 +1,13 @@
 module HideAncestry
   module InstanceMethods
     def hide
-      return not_valid_error unless valid?
+      return not_valid unless valid?
       HideAncestry::ModelManage::Hide.call(self)
     end
 
     def restore
-      return not_valid_error unless valid?
-      return already_restored_error unless public_send(hiden_column) == true
+      return not_valid unless valid?
+      return already_restored unless public_send(hiden_column) == true
       HideAncestry::ModelManage::Restore.call(self)
     end
 
