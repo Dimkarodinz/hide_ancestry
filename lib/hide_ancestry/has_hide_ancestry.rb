@@ -1,4 +1,4 @@
-module HasHiddenAncestry
+module HasHideAncestry
   extend ActiveSupport::Concern
 
   class_methods do

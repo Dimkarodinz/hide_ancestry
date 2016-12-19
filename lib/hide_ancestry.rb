@@ -10,7 +10,7 @@ require 'hide_ancestry/model_manage/custom_ancestry_updater'
 require 'hide_ancestry/model_manage/hide'
 require 'hide_ancestry/model_manage/restore'
 
-require 'hide_ancestry/has_hidden_ancestry'
+require 'hide_ancestry/has_hide_ancestry'
 
 module HideAncestry
 end
