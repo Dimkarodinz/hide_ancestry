@@ -96,7 +96,7 @@ rake db:migrate
 ```
 It will add to the specified table:
 + old_parent_id:integer
-+ old_child_ids:array  (thanks to rails serialize)
++ old_child_ids:text   (will be array - thanks to rails serialize)
 + hide_ancestry:string
 + hided_status:boolean (unless --no-hided-status option)
 
@@ -118,21 +118,22 @@ hided?                    # check if node is hided
 hided_parent_changed?     # check if regular node changed it hided parent
 hided_children_present?   # check if regular node has hided children
 
-hided_parent              # return hided parent of regular node (if present)
-subtree_with_hided        # return subtree of regular node with hided nodes
+hided_parent              # returns hided parent of regular node (if present)
+subtree_with_hided        # returns subtree of regular node with hided nodes
 
-children_of_hided         # return children of hided node
-hided_descendants_ids     # return ids of hided nodes in subtree of regular node 
+children_of_hided         # returns children of hided node
+hided_descendants_ids     # returns ids of hided nodes in subtree of regular node 
 hide_ancestry_ids         # old ancestors ids of hided node
+depth_with_hided          # returns depth of node given hided nodes
 
 ```
 
 ###Scopes
 ```ruby
-hided            # return nodes with hided_status (or you custom column)
-unhided          # return nodes without hided_status
-hided_nodes(ids) # look for hided nodes from ids
-hided_childs(id) # return hided children nodes of id
+hided            # returns nodes with hided_status (or you custom column)
+unhided          # returns nodes without hided_status
+hided_nodes(ids) # look for hided nodes with ids
+hided_childs(id) # returns hided children nodes of node#id
 
 ```
 

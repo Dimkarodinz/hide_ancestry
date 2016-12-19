@@ -46,8 +46,8 @@ module HideAncestry
     def subtree_with_hided
       sub_ids = subtree.pluck(:id)
       ids_for_search = sub_ids + hided_descendants_ids
-      self.class.where id: ids_for_search
-      #.order(hide_ancestry: :desc)
+      relation = self.class.where id: ids_for_search
+      relation.order(hide_ancestry: :asc)
     end
 
     def depth_with_hided
